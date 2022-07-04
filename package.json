@@ -1,0 +1,27 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "server",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "framer-motion": "^6.2.8",
+    "mongodb": "^4.4.1",
+    "mongoose": "^6.2.8",
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "react",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "kennyabby",
+  "license": "ISC"
+}
