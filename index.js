@@ -14,68 +14,33 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.use(bodyParser.json())
 
-// app.post('/show_success', async (req, res) => {
-//   console.log(req.body)
-//   try {
-//     const options = {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body: req.body,
-//     }
-//     console.log(options.body)
-//     console.log('fetching...')
-//     fetch('http://localhost:5000/show_success', options).then(async (resp) => {
-//       console.log('done')
-//       const resps = await resp.json()
-//       console.log(resps)
-//     })
-//   } catch (TypeError) {}
-// })
 app.post('/postUserDetails', async (req, res) => {
   const user = await req.body
-  const password = user.password
-  const identificationKey = user.identificationKey
-  user.password = useEndecrypt('encrypt', identificationKey, password)
-  user.identificationKey = useEndecrypt('encrypt', '4554', identificationKey)
   await main(
     (func = 'createDoc'),
-    (database = 'naps'),
-    (collection = 'NapsDatabase'),
+    (database = 'dermai'),
+    (collection = 'dermaiUsers'),
     (data = user)
   ).catch(console.error)
   res.json({
-    isDelivered: delivered,
+    delivered: delivered,
   })
 })
-app.post('/postQuiz', async (req, res) => {
-  await main(
-    (func = 'createDoc'),
-    (database = 'naps'),
-    (collection = req.body.collection),
-    (data = req.body.update)
-  )
-    .catch(console.error)
-    .then(() => {
-      res.json({
-        isDelivered: delivered,
-      })
-    })
-})
 
-app.post('/getMatricList', async (req, res) => {
+app.post('/getEmailList', async (req, res) => {
   await main(
     (func = 'findDocprop'),
-    (database = 'naps'),
-    (collection = 'NapsDatabase'),
+    (database = 'dermai'),
+    (collection = 'dermaiUsers'),
     (data = req.body)
   )
     .catch(console.error)
     .then(() => {
       var list = propList.map((obj) => {
-        return obj.matricNo
+        return obj.email
       })
       res.json({
-        matricList: list,
+        emailList: list,
       })
     })
 })
@@ -83,8 +48,8 @@ app.post('/getMatricList', async (req, res) => {
 app.post('/getUserDetails', async (req, res) => {
   await main(
     (func = 'findOne'),
-    (database = 'naps'),
-    (collection = 'NapsDatabase'),
+    (database = 'dermai'),
+    (collection = 'dermaiUsers'),
     (data =
       req.body.matricNo !== undefined
         ? req.body
@@ -100,8 +65,8 @@ app.post('/getUserDetails', async (req, res) => {
 app.post('/getUsersDetails', async (req, res) => {
   await main(
     (func = 'findMany'),
-    (database = 'naps'),
-    (collection = 'NapsDatabase'),
+    (database = 'dermai'),
+    (collection = 'dermaiUsers'),
     (data = req.body)
   )
     .catch(console.error)
@@ -111,41 +76,12 @@ app.post('/getUsersDetails', async (req, res) => {
       })
     })
 })
-app.post('/getUpdates', async (req, res) => {
-  await main(
-    (func = 'limitFindMany'),
-    (database = 'naps'),
-    (collection = req.body.collection),
-    (data = req.body.data),
-    (limit = req.body.limit)
-  )
-    .catch(console.error)
-    .then(() => {
-      res.json({
-        updates: array,
-      })
-    })
-})
-app.post('/getOneUpdate', async (req, res) => {
-  await main(
-    (func = 'findOne'),
-    (database = 'naps'),
-    (collection = req.body.collection),
-    (data = req.body.prop)
-  )
-    .catch(console.error)
-    .then(() => {
-      console.log(array[0])
-      res.json({
-        update: array[0],
-      })
-    })
-})
+
 app.post('/updateOneUser', async (req, res) => {
   await main(
     (func = 'updateOne'),
-    (database = 'naps'),
-    (collection = 'NapsDatabase'),
+    (database = 'dermai'),
+    (collection = 'dermaiUsers'),
     (data = req.body.prop)
   )
     .catch(console.error)
@@ -158,7 +94,7 @@ app.post('/updateOneUser', async (req, res) => {
 app.post('/updateOneDoc', async (req, res) => {
   await main(
     (func = 'updateOne'),
-    (database = 'naps'),
+    (database = 'dermai'),
     (collection = req.body.collection),
     (data = req.body.prop)
   )
@@ -172,19 +108,17 @@ app.post('/updateOneDoc', async (req, res) => {
 app.post('/getpassList', async (req, res) => {
   await main(
     (func = 'findOne'),
-    (database = 'naps'),
-    (collection = 'NapsDatabase'),
+    (database = 'dermai'),
+    (collection = 'dermaiUsers'),
     (data = req.body)
   )
     .catch(console.error)
     .then(() => {
+      console.log(array[0])
       if (array[0] !== undefined && array[0] !== null) {
-        var key = useEndecrypt('decrypt', '4554', array[0].identificationKey)
-        var password = useEndecrypt('decrypt', key, array[0].password)
-
         res.json({
           id: array[0]._id,
-          password: password,
+          password: array[0].password,
         })
       } else {
         res.json({
@@ -195,20 +129,6 @@ app.post('/getpassList', async (req, res) => {
     })
 })
 
-app.post('/getNapsSettings', async (req, res) => {
-  await main(
-    (func = 'findDocprop'),
-    (database = 'naps'),
-    (collection = 'NapsSettings'),
-    (data = req.body)
-  )
-    .catch(console.error)
-    .then(() => {
-      res.json({
-        settings: propList[0],
-      })
-    })
-})
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`))
 
 const main = async (func, database, collection, data, limit) => {
@@ -251,6 +171,7 @@ const main = async (func, database, collection, data, limit) => {
       .collection(collection)
       .findOne({ ...data })
     array = await [result]
+    console.log(array)
   }
   const findMany = async (database, collection, data) => {
     const result = await client
