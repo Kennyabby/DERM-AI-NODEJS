@@ -22,6 +22,9 @@
     "express",
     "mongodb"
   ],
+  "engines": {
+    "node": "^16.14.0"
+  },
   "author": "kennyabby",
   "license": "ISC"
 }

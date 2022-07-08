@@ -51,9 +51,7 @@ app.post('/getUserDetails', async (req, res) => {
     (database = 'dermai'),
     (collection = 'dermaiUsers'),
     (data =
-      req.body.matricNo !== undefined
-        ? req.body
-        : { _id: ObjectId(req.body._id) })
+      req.body.email !== undefined ? req.body : { _id: ObjectId(req.body._id) })
   )
     .catch(console.error)
     .then(() => {
@@ -114,7 +112,6 @@ app.post('/getpassList', async (req, res) => {
   )
     .catch(console.error)
     .then(() => {
-      console.log(array[0])
       if (array[0] !== undefined && array[0] !== null) {
         res.json({
           id: array[0]._id,
@@ -132,7 +129,8 @@ app.post('/getpassList', async (req, res) => {
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`))
 
 const main = async (func, database, collection, data, limit) => {
-  const uri = 'mongodb://localhost:27017'
+  //const uri = 'mongodb://localhost:27017'
+  const uri = 'mongodb+srv://kennyabby:kennypro@20@cluster0.nm56r.mongodb.net/?retryWrites=true&w=majority'
   const client = new MongoClient(uri, { useNewUrlParser: true })
 
   const listDatabases = async () => {
@@ -171,7 +169,6 @@ const main = async (func, database, collection, data, limit) => {
       .collection(collection)
       .findOne({ ...data })
     array = await [result]
-    console.log(array)
   }
   const findMany = async (database, collection, data) => {
     const result = await client
