@@ -19,7 +19,7 @@ app.use(bodyParser.json())
 //   optionsSuccessStatus: 200 // some legacy browsers (Ie11, various SmartTVs) choke on 204
 // }
 
-var whitelist =['localhost','https://eploredermai.herokuapp.com']
+var whitelist =['localhost','https://exploredermai.herokuapp.com']
 var corsOptions = {
   origin: (origin, callback)=>{
     if whitelist.indexOf(origin)!==-1{
