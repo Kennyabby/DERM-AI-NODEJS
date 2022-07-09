@@ -21,10 +21,12 @@ app.use(bodyParser.json())
 
 var whitelist =['http://localhost:3000','https://exploredermai.herokuapp.com']
 var corsOptions = {
-  origin: (origin, callback)=>{
-    if whitelist.indexOf(origin)!==-1{
+  origin: function (origin, callback){
+    if (whitelist.indexOf(origin)!==-1){
+      console.log('origin accepted')
       callback(null, true)
     }else{
+      console.log('origin rejected')
       callback(new Error('Not allowed by CORS'))
     }
   }
