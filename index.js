@@ -12,24 +12,24 @@ var updated = false
 var delivered = false
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use(cors())
+
 
 // var corsOptions = {
 //   origin: 'https://exploredermai.herokuapp.com',
 //   optionsSuccessStatus: 200 // some legacy browsers (Ie11, various SmartTVs) choke on 204
 // }
 
-// var whitelist =['localhost','https://exploredermai.herokuapp.com']
-// var corsOptions = {
-//   origin: (origin, callback)=>{
-//     if whitelist.indexOf(origin)!==-1{
-//       callback(null, true)
-//     }else{
-//       callback(new Error('Not allowed by CORS'))
-//     }
-//   }
-//}
-
+var whitelist =['http://localhost:3000','https://exploredermai.herokuapp.com']
+var corsOptions = {
+  origin: (origin, callback)=>{
+    if whitelist.indexOf(origin)!==-1{
+      callback(null, true)
+    }else{
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions))
 app.post('/postUserDetails', async (req, res) => {
   const user = await req.body
   await main(
