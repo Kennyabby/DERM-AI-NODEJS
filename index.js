@@ -11,26 +11,26 @@ var array = {}
 var updated = false
 var delivered = false
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cors())
 app.use(bodyParser.json())
+app.use(cors())
 
 // var corsOptions = {
 //   origin: 'https://exploredermai.herokuapp.com',
 //   optionsSuccessStatus: 200 // some legacy browsers (Ie11, various SmartTVs) choke on 204
 // }
 
-var whitelist =['localhost','https://exploredermai.herokuapp.com']
-var corsOptions = {
-  origin: (origin, callback)=>{
-    if whitelist.indexOf(origin)!==-1{
-      callback(null, true)
-    }else{
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
+// var whitelist =['localhost','https://exploredermai.herokuapp.com']
+// var corsOptions = {
+//   origin: (origin, callback)=>{
+//     if whitelist.indexOf(origin)!==-1{
+//       callback(null, true)
+//     }else{
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+//}
 
-app.post('/postUserDetails', cors(corsOptions), async (req, res) => {
+app.post('/postUserDetails', async (req, res) => {
   const user = await req.body
   await main(
     (func = 'createDoc'),
@@ -43,7 +43,7 @@ app.post('/postUserDetails', cors(corsOptions), async (req, res) => {
   })
 })
 
-app.post('/getEmailList', cors(corsOptions), async (req, res) => {
+app.post('/getEmailList', async (req, res) => {
   await main(
     (func = 'findDocprop'),
     (database = 'dermai'),
@@ -61,7 +61,7 @@ app.post('/getEmailList', cors(corsOptions), async (req, res) => {
     })
 })
 
-app.post('/getUserDetails', cors(corsOptions), async (req, res) => {
+app.post('/getUserDetails', async (req, res) => {
   await main(
     (func = 'findOne'),
     (database = 'dermai'),
@@ -76,7 +76,7 @@ app.post('/getUserDetails', cors(corsOptions), async (req, res) => {
       })
     })
 })
-app.post('/getUsersDetails', cors(corsOptions), async (req, res) => {
+app.post('/getUsersDetails', async (req, res) => {
   await main(
     (func = 'findMany'),
     (database = 'dermai'),
@@ -91,7 +91,7 @@ app.post('/getUsersDetails', cors(corsOptions), async (req, res) => {
     })
 })
 
-app.post('/updateOneUser', cors(corsOptions), async (req, res) => {
+app.post('/updateOneUser', async (req, res) => {
   await main(
     (func = 'updateOne'),
     (database = 'dermai'),
@@ -105,7 +105,7 @@ app.post('/updateOneUser', cors(corsOptions), async (req, res) => {
       })
     })
 })
-app.post('/updateOneDoc', cors(corsOptions), async (req, res) => {
+app.post('/updateOneDoc', async (req, res) => {
   await main(
     (func = 'updateOne'),
     (database = 'dermai'),
@@ -119,7 +119,7 @@ app.post('/updateOneDoc', cors(corsOptions), async (req, res) => {
       })
     })
 })
-app.post('/getpassList', cors(corsOptions), async (req, res) => {
+app.post('/getpassList', async (req, res) => {
   await main(
     (func = 'findOne'),
     (database = 'dermai'),
