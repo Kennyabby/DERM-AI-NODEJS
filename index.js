@@ -1,9 +1,10 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+const path = require('path')
 const app = express()
-const apiPort = 3001
-const { MongoClient } = require('mongodb')
+const apiPort = process.env.PORT || 3001
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const ObjectId = require('mongodb').ObjectId
 const { useEndecrypt } = require('./algorithms/useEndecrypt.js')
 var propList = []
@@ -12,26 +13,34 @@ var updated = false
 var delivered = false
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-
+app.use(cors())
+app.use(express.static(path.join(__dirname+'/public')))
 
 // var corsOptions = {
 //   origin: 'https://exploredermai.herokuapp.com',
 //   optionsSuccessStatus: 200 // some legacy browsers (Ie11, various SmartTVs) choke on 204
 // }
 
-var whitelist =['http://localhost:3000','https://exploredermai.herokuapp.com']
-var corsOptions = {
-  origin: function (origin, callback){
-    if (whitelist.indexOf(origin)!==-1){
-      console.log('origin accepted')
-      callback(null, true)
-    }else{
-      console.log('origin rejected')
-      callback(new Error('Not allowed by CORS'))
+// var whitelist =['http://localhost:3000','https://exploredermai.herokuapp.com']
+// var corsOptions = {
+//   origin: function (origin, callback){
+//     if (whitelist.indexOf(origin)!==-1){
+//       console.log('origin accepted')
+//       callback(null, true)
+//     }else{
+//       console.log('origin rejected')
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+// }
+// app.use(cors(corsOptions))
+app.get('/*', (req, res)=>{
+  res.sendFile(path.join(__dirname+'/public/index.html'), (err)=>{
+    if (err){
+      res.status(500).send(err)
     }
-  }
-}
-app.use(cors(corsOptions))
+  })
+})
 app.post('/postUserDetails', async (req, res) => {
   const user = await req.body
   await main(
@@ -148,8 +157,14 @@ app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`))
 
 const main = async (func, database, collection, data, limit) => {
   //const uri = 'mongodb://localhost:27017'
-  const uri = 'mongodb+srv://kennyabby:kennypro@20@cluster0.nm56r.mongodb.net/?retryWrites=true&w=majority'
-  const client = new MongoClient(uri, { useNewUrlParser: true })
+
+  const uri = "mongodb+srv://kennyabby:Kennypro21@cluster0.nm56r.mongodb.net/?retryWrites=true&w=majority";
+  const client = new MongoClient(uri, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true, 
+    serverApi: ServerApiVersion.v1 
+  });
+
 
   const listDatabases = async () => {
     const databaseList = await client.db().admin().listDatabases()
