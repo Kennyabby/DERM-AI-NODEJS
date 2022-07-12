@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+require('dotenv').config({path: __dirname + '/.env'})
 const cors = require('cors')
 const path = require('path')
 const app = express()
@@ -15,7 +16,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static(path.join(__dirname+'/public')))
-
 // var corsOptions = {
 //   origin: 'https://exploredermai.herokuapp.com',
 //   optionsSuccessStatus: 200 // some legacy browsers (Ie11, various SmartTVs) choke on 204
@@ -157,8 +157,7 @@ app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`))
 
 const main = async (func, database, collection, data, limit) => {
   //const uri = 'mongodb://localhost:27017'
-
-  const uri = "mongodb+srv://kennyabby:Kennypro21@cluster0.nm56r.mongodb.net/?retryWrites=true&w=majority";
+  const uri = process.env.MONGO_URL
   const client = new MongoClient(uri, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true, 
